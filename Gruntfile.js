@@ -1,8 +1,10 @@
 /*
  * grunt-selenium-webdriver
  * https://github.com/connectid/grunt-selenium-webdriver
+ * gives you three tasks selenium_start, selenium_phantom_hub (single client instance for headless testing), selenium_stop
+ * eg  grunt.registerTask('startstop', ['selenium_start', 'selenium_stop','selenium_phantom_hub', 'selenium_stop']);
  *
- * Copyright (c) 2014 Paul Cook
+ * Copyright (c) 2014 ConnectiD
  * Licensed under the MIT license.
  */
 
@@ -79,6 +81,5 @@ module.exports = function(grunt) {
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
-  grunt.registerTask('startstop', ['selenium_start', 'selenium_stop']);
 
 };

@@ -37,10 +37,7 @@
   "dependencies": {
     "saucelabs": "latest",
     "selenium-webdriver": "latest",
-    "phantomjs": "latest",
-    "q": "latest",
-    "grunt-promise-q": "latest"
-
+    "phantomjs": "latest"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.0",

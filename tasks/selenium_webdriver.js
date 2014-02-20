@@ -17,10 +17,8 @@ var spawn = require('child_process').spawn,
     starting = false, 
     started = false,
     os = require('os'),
-    selOptions = [ '-jar' , 'java/selenium-server-standalone-2.39.0.jar'],
-    Q = require("q"),
-    asyncTask = require("grunt-promise-q");
-
+    selOptions = [ '-jar' , 'java/selenium-server-standalone-2.39.0.jar'];
+    
 //    selenium = require('selenium-webdriver'); // use their start server?
 
 
@@ -30,7 +28,10 @@ var phantomLoc = __dirname + "/../node_modules/phantomjs/bin";
 var seleniumServerProcess = null,
     phantomProcess = null;
 
-
+/*
+ * starts phantom, called after grid has been established
+ * @private
+ */
 function startPhantom ( next ) {
     
     phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://127.0.0.1:4444' ]);
@@ -84,12 +85,12 @@ function start( next, isHeadless ) {
     });
 
     seleniumServerProcess.stderr.setEncoding('utf8');
-    // listen to procee output until server is actually ready, otherwise next task will break
+    // parse procee output until server is actually ready, otherwise next task will break
     seleniumServerProcess.stderr.on('data', function(data) {
         var errMsg;
         data = data.trim();
         if ( isHeadless) {
-            // check for hub
+            // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
                 console.log ('selenium hub ready');
                 return startPhantom(next);
@@ -112,7 +113,7 @@ function start( next, isHeadless ) {
     });
     seleniumServerProcess.stdout.setEncoding('utf8');
     seleniumServerProcess.stdout.on('data', function( msg ) {
-        // look for msg that indicates it's ready and then stop logging messages
+        // monitor process output for ready message
         if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
             console.log ('seleniumrc', 'server ready');
             started = true;
@@ -130,6 +131,9 @@ function start( next, isHeadless ) {
     
 /**
  * Stop the servers
+ * 
+ * @param function optional callback
+ * @private
  */
 function stop(next) {
     if (phantomProcess) { 
@@ -141,8 +145,7 @@ function stop(next) {
                 next();
             }
         });
-        // kill the child process
-        // SIGTERM is supposed to let the process end cleanly
+        // SIGTERM should ensure processes end cleanly, can do killall -9 java if getting startup errors
         phantomProcess.kill('SIGTERM');
         started = false;
         starting = false;
@@ -156,16 +159,16 @@ function stop(next) {
                 next();
             }
         });
-        // kill the child process
-        // SIGTERM is supposed to let the process end cleanly
         seleniumServerProcess.kill('SIGTERM');        
         started = false;
         starting = false;
     }
 }
 
-
-// stop the child processes if this process exits
+/*
+ * stop the child processes if this process exits
+ * @private
+ */
 process.on('exit', function onProcessExit() {
     if (started) {
         stop();
@@ -173,25 +176,27 @@ process.on('exit', function onProcessExit() {
 });
 
 /**
- * Exports
+ * Exports 3 tasks
+ * selenium_start - will start selenium local server on http://127.0.0.1:4444/wd/hub with all browsers in PATH available
+ * selenium_phantom_hub - will start selenium grid hub and attachphantomjs to it
+ * stop_selenium - stops whichever server was started
+ * @public
  */
 module.exports= function ( grunt) {
-    var trueFn = function () { 
-//        console.log ('finished'); 
-        return true; 
-    };
-    asyncTask.register(grunt, 'selenium_start' , 'Starts and stops webdriver in grid or hub mode for use with 3rd party CI platforms' , function () {
-        return Q.nfcall( start ,trueFn , false );
+    grunt.registerTask( 'selenium_start' , 'Starts and stops webdriver in grid or hub mode for use with 3rd party CI platforms' , function () {
+        var done = this.async();
+        return start ( done , false );
     });    
-    asyncTask.register('selenium_phantom_hub', 'Starts selenium in hub mode and attaches a single phantonjs to it for headless env', function() {
-        return Q.nfcall( start ,trueFn , true );
+    grunt.registerTask( 'selenium_phantom_hub' , 'Starts selenium in hub mode and attaches a single phantonjs to it for headless env', function() {
+        var done = this.async();
+        return start ( done , true );
     });
-    asyncTask.register('selenium_stop', 'Stops webdriver in grid or hub mode for use with 3rd party CI platforms', function() {
-        return Q.nfcall( stop ,trueFn );
+    grunt.registerTask( 'selenium_stop', 'Stops webdriver in grid or hub mode for use with 3rd party CI platforms', function() {
+        var done = this.async();
+        return stop ( done );
     });
 };
 
 
-//start(function() { stop ( function() { return console.log('finished'); } ) });
 
 
