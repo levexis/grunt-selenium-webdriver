@@ -27,7 +27,7 @@ var spawn = require('child_process').spawn,
 if (fs.existsSync('jar')) {
     selOptions.push ( 'jar/selenium-server-standalone-2.39.0.jar' );
 } else {
-    selOptions.push ( '../node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
+    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
 }
 
 /*
