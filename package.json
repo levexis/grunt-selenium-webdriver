@@ -1,18 +1,18 @@
 {
   "name": "grunt-selenium-webdriver",
   "description": "Starts and stops selenium in webdriver or hub mode for use with 3rd party CI platforms where phantomjs / chromedriver can have issue with selenium",
-  "version": "0.2.390",
+  "version": "0.2.391",
   "homepage": "https://github.com/connectid/grunt-selenium-webdriver",
   "contibutors": [
-    {
-      "name": "Paul Cook",
-      "email": "paul@connectid.me",
-      "url": "https://github.com/levexis"
-    },
     { 
       "name": "Dan Woodward",
       "email": "dan@connectid.me",
       "url": "https://github.com/deedubbleyoo"
+    },
+    {
+      "name": "Paul Cook",
+      "email": "paul@connectid.me",
+      "url": "https://github.com/levexis"
     }
   ],
   "repository": {
