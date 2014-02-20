@@ -1,7 +1,7 @@
 {
   "name": "grunt-selenium-webdriver",
   "description": "Starts and stops webdriver in grid or hub mode for use with 3rd party CI platforms where phantomjs / chromedriver can have issue with selenium",
-  "version": "0.2.39",
+  "version": "0.2.39.1",
   "homepage": "https://github.com/connectid/grunt-selenium-webdriver",
   "contibutors": [
     {
