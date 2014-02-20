@@ -17,7 +17,7 @@ var spawn = require('child_process').spawn,
     starting = false, 
     started = false,
     os = require('os'),
-    selOptions = [ '-jar' , 'java/selenium-server-standalone-2.39.0.jar'];
+    selOptions = [ '-jar' , 'jar/selenium-server-standalone-2.39.0.jar'];
     
 //    selenium = require('selenium-webdriver'); // use their start server?
 

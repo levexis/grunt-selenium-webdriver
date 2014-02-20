@@ -1,6 +1,10 @@
 # grunt-selenium-webdriver
 
-> Starts and stops webdriver in griid or hub mode for use with 3rd party CI platforms
+> Starts and stops webdriver in grid or hub mode, works with 3rd party CI platforms
+
+We wrote this after extensive problems getting selenium webdriver tests to run in all local and 3rd party environments. If you are using circleci and want to run headless tests then the selenium_phantom_hub task will do the trick.
+
+Note that we have found probems with selenium and bundled chromedriver but at the current time we do not have an option to start chromedriver in the same way as phantomjs. Our advice is use firefox and phantom for CI testing and saucelabs / local for the rest.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
@@ -35,55 +39,20 @@ grunt.initConfig({
 });
 ```
 
-### Options
-
-#### options.separator
-Type: `String`
-Default value: `',  '`
-
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
-
 ### Usage Examples
 
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
+This task is designed to be used in conjunction with your test runner of preference. The server is destroyed when grunt exists so grunt start_selenium will only make a server available to other grunt tasks.
+If you need a task that persists the selenium server then try grunt-selenium-standalone.
 
-```js
-grunt.initConfig({
-  selenium_webdriver: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
-
-```js
-grunt.initConfig({
-  selenium_webdriver: {
-    options: {
-      separator: ': ',
-      punctuation: ' !!!',
-    },
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
+#### selenium_start
+Starts a selenium local server on http://127.0.0.1:4444/wd/hub with all browsers in PATH available, including phantom. However, if you get errors with test run using default phantomjs try the task below.
+#### selenium_phantom_hub
+starts a selenium grid hub and attaches phantomjs to it for headless testing, only one client is available in this configuration
+#### stop_selenium
+stops whichever server was started, if you need to change from headless to normal mode then you will need to stop first
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-_(Nothing yet)_
+0.2.39 inial releas using selenium standalone 2.39.0 

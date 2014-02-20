@@ -1,6 +1,7 @@
 'use strict';
 
-var grunt = require('grunt');
+var grunt = require('grunt'),
+    webdriver = require('selenium-webdriver');
 
 /*
   ======== A Handy Little Nodeunit Reference ========
@@ -22,27 +23,30 @@ var grunt = require('grunt');
     test.ifError(value)
 */
 
+var client;
 exports.selenium_webdriver = {
   setUp: function(done) {
-    // setup here if necessary
+    // just testing phantomjs for now as would need to check environment otherwise, basic start / stop have to work to get here anyway    
+    var serverConfig = 'http://127.0.0.1:4444/wd/hub',
+    capabilities = {
+        silent: true,             
+        browserName: 'phantomjs' };
+
+
+    client = new webdriver.Builder().
+        usingServer( serverConfig ).
+        withCapabilities( capabilities).
+        build();
     done();
   },
-  default_options: function(test) {
+  get_eckhart: function(test) {
     test.expect(1);
-
-    var actual = grunt.file.read('tmp/default_options');
-    var expected = grunt.file.read('test/expected/default_options');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
-
-    test.done();
-  },
-  custom_options: function(test) {
-    test.expect(1);
-
-    var actual = grunt.file.read('tmp/custom_options');
-    var expected = grunt.file.read('test/expected/custom_options');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
-
-    test.done();
-  },
+    client.get ( 'http://google.com/' );
+    client.getTitle().then( function ( title ) {
+        console.log ( title );
+        test.ok ( title === 'Google' , 'Fetched Google');
+        test.done();
+    });
+  }
 };
+
