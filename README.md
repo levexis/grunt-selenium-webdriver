@@ -27,16 +27,13 @@ grunt.loadNpmTasks('grunt-selenium-webdriver');
 In your project's Gruntfile, add a section named `selenium_webdriver` to the data object passed into `grunt.initConfig()`.
 
 ```js
-grunt.initConfig({
-  selenium_webdriver: {
-    options: {
-      // Task-specific options go here.
-    },
-    your_target: {
-      // Target-specific file lists and/or options go here.
-    },
-  },
-});
+    grunt.loadNpmTasks('grunt-selenium-webdriver');
+    grunt.registerTask('e2e', [
+        'selenium_phantom_hub',
+        'mocha_e2e',
+        'selenium_stop'    
+    ]);
+
 ```
 
 ### Usage Examples
