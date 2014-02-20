@@ -17,16 +17,18 @@ var spawn = require('child_process').spawn,
     starting = false, 
     started = false,
     os = require('os'),
-    selOptions = [ '-jar' , 'jar/selenium-server-standalone-2.39.0.jar'];
-    
-//    selenium = require('selenium-webdriver'); // use their start server?
+    selOptions = [ '-jar' ],
+    phantomLoc = __dirname + "/../node_modules/phantomjs/bin",
+    seleniumServerProcess = null,
+    phantomProcess = null,
+    fs = require('fs');
 
-
-var phantomLoc = __dirname + "/../node_modules/phantomjs/bin";
-
-
-var seleniumServerProcess = null,
-    phantomProcess = null;
+// installed as module or locally?
+if (fs.existsSync('jar')) {
+    selOptions.push ( 'jar/selenium-server-standalone-2.39.0.jar' );
+} else {
+    selOptions.push ( '../node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
+}
 
 /*
  * starts phantom, called after grid has been established
