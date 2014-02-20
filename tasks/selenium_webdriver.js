@@ -18,7 +18,7 @@ var spawn = require('child_process').spawn,
     started = false,
     os = require('os'),
     selOptions = [ '-jar' ],
-    phantomLoc = __dirname + "/../node_modules/phantomjs/bin",
+    phantomLoc = __dirname,
     seleniumServerProcess = null,
     phantomProcess = null,
     fs = require('fs');
@@ -26,8 +26,10 @@ var spawn = require('child_process').spawn,
 // installed as module or locally?
 if (fs.existsSync('jar')) {
     selOptions.push ( 'jar/selenium-server-standalone-2.39.0.jar' );
+    phantomLoc += "/../node_modules/phantomjs/bin";
 } else {
     selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
+    phantomLoc += "/../../phantomjs/bin";
 }
 
 /*
@@ -47,7 +49,7 @@ function startPhantom ( next ) {
     phantomProcess.stdout.on('data', function( msg ) {
         // look for msg that indicates it's ready and then stop logging messages
         if ( !started && msg.indexOf( 'Registered with grid' ) > -1) {
-            console.log ('phantom client ready');
+//            console.log ('phantom client ready');
             started = true;
             starting = false;
             if (typeof next === 'function') { 
@@ -94,7 +96,7 @@ function start( next, isHeadless ) {
         if ( isHeadless) {
             // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
-                console.log ('selenium hub ready');
+//                console.log ('selenium hub ready');
                 return startPhantom(next);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
@@ -117,15 +119,12 @@ function start( next, isHeadless ) {
     seleniumServerProcess.stdout.on('data', function( msg ) {
         // monitor process output for ready message
         if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
-            console.log ('seleniumrc', 'server ready');
+//            console.log ('seleniumrc server ready');
             started = true;
             starting = false;
             if (typeof next === 'function') {
                 return next();
             }
-        } else if ( msg.indexOf( 'should connect to' ) > -1 )  {
-            // log this message so you can see which port
-            console.log ('seleniumrc starting', msg.substr(20));
         }
     });
 }
@@ -139,9 +138,7 @@ function start( next, isHeadless ) {
  */
 function stop(next) {
     if (phantomProcess) { 
-        console.log ('phantom stop request pid',phantomProcess.pid);
         seleniumServerProcess.on('close', function (code, signal) {
-            console.log('phantom process terminated');
             // this should really resolve both callbacks rather than guessing phantom wrapper will terminate instantly
             if (typeof next === 'function' && !seleniumServerProcess ) {
                 next();
@@ -153,9 +150,7 @@ function stop(next) {
         starting = false;
     }
     if (seleniumServerProcess) { 
-        console.log ('seleniumrc stop request pid',seleniumServerProcess.pid);
         seleniumServerProcess.on('close', function (code, signal) {
-            console.log('selenium process terminated');
             if (typeof next === 'function' ) { 
                 // need to stub out the other callback
                 next();
