@@ -1,6 +1,6 @@
 # grunt-selenium-webdriver
 
-> Starts and stops webdriver in grid or hub mode, works with 3rd party CI platforms
+> Starts and stops slenium in webdriver or hub mode, works with 3rd party CI platforms
 
 We wrote this after extensive problems getting selenium webdriver tests to run in all local and 3rd party environments. If you are using circleci and want to run headless tests then the selenium_phantom_hub task will do the trick.
 
@@ -52,4 +52,4 @@ stops whichever server was started, if you need to change from headless to norma
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
-0.2.391 inital release using selenium-server-standalone-2.39.0.jar
+0.2.392 inital release using selenium-server-standalone-2.39.0.jar
