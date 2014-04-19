@@ -26,10 +26,11 @@ var grunt = require('grunt'),
 var client;
 exports.selenium_webdriver = {
   setUp: function(done) {
-    // just testing phantomjs for now as would need to check environment otherwise, basic start / stop have to work to get here anyway    
+    console.log('setup', arguments);
+    // just testing phantomjs for now as would need to check environment otherwise, basic start / stop have to work to get here anyway
     var serverConfig = 'http://127.0.0.1:4444/wd/hub',
     capabilities = {
-        silent: true,             
+        silent: false,
         browserName: 'phantomjs' };
 
 

@@ -32,13 +32,13 @@ module.exports = function(grunt) {
     },
 
     selenium_start: {
-        options: {}
+        options: { port: 4445 }
     },
     selenium_phantom_hub: {
-        options: {}
+        options: { port: 4445 }
     },
     selenium_stop: {
-        options: {}
+        options: { port: 4445 }
     },
 
     // Unit tests.
