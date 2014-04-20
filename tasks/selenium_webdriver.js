@@ -36,9 +36,9 @@ if (fs.existsSync('jar')) {
  * starts phantom, called after grid has been established
  * @private
  */
-function startPhantom ( next ) {
-    
-    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://127.0.0.1:4444' ]);
+function startPhantom ( next, options ) {
+
+    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
 
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
@@ -111,7 +111,7 @@ function start( next, isHeadless, options ) {
             // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
 //                console.log ('selenium hub ready');
-                return startPhantom(next);
+                return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
                  errMsg = 'FATAL ERROR starting selenium: ' + data + ' maybe try killall -9 java';
