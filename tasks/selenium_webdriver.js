@@ -36,9 +36,9 @@ if (fs.existsSync('jar')) {
  * starts phantom, called after grid has been established
  * @private
  */
-function startPhantom ( next ) {
-    
-    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://127.0.0.1:4444' ]);
+function startPhantom ( next, options ) {
+
+    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
 
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
@@ -63,9 +63,10 @@ function startPhantom ( next ) {
  * starts a selenium server with access to default browsers
  * @param next callback function
  * @param isHeadless will start bundled phantomjs single client with selenium in hub mode
+ * @param options GruntJS Options object
  * @private
  */
-function start( next, isHeadless ) {
+function start( next, isHeadless, options ) {
 
     if ( started) { 
         return next(console.log('already started')); 
@@ -75,6 +76,19 @@ function start( next, isHeadless ) {
         selOptions.push ( '-role');
         selOptions.push ( 'hub');
     }
+
+    selOptions.push ( '-host' );
+    selOptions.push ( options.host );
+
+    selOptions.push ( '-port' );
+    selOptions.push ( options.port );
+
+    selOptions.push ( '-timeout' );
+    selOptions.push ( options.timeout );
+
+    selOptions.push ( '-maxSession' );
+    selOptions.push ( options.maxSession );
+
 
     seleniumServerProcess = spawn( 'java', selOptions );
     // selenium webdriver has a port prober in it which could be factored in.
@@ -97,7 +111,7 @@ function start( next, isHeadless ) {
             // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
 //                console.log ('selenium hub ready');
-                return startPhantom(next);
+                return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
                  errMsg = 'FATAL ERROR starting selenium: ' + data + ' maybe try killall -9 java';
@@ -181,12 +195,24 @@ process.on('exit', function onProcessExit() {
  */
 module.exports= function ( grunt) {
     grunt.registerTask( 'selenium_start' , 'Starts and stops webdriver in grid or hub mode for use with 3rd party CI platforms' , function () {
+        var options = this.options({
+          timeout: 30,
+          host: '127.0.0.1',
+          port: 4444,
+          maxSession: 5
+        });
         var done = this.async();
-        return start ( done , false );
+        return start ( done , false, options );
     });    
     grunt.registerTask( 'selenium_phantom_hub' , 'Starts selenium in hub mode and attaches a single phantonjs to it for headless env', function() {
+        var options = this.options({
+          timeout: 30,
+          host: '127.0.0.1',
+          port: 4444,
+          maxSession: 5
+        });
         var done = this.async();
-        return start ( done , true );
+        return start ( done , true, options );
     });
     grunt.registerTask( 'selenium_stop', 'Stops webdriver in grid or hub mode for use with 3rd party CI platforms', function() {
         var done = this.async();
