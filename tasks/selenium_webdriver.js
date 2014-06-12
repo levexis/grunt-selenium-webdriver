@@ -27,8 +27,11 @@ var spawn = require('child_process').spawn,
 if (fs.existsSync('jar')) {
     selOptions.push ( 'jar/selenium-server-standalone-2.39.0.jar' );
     phantomLoc += "/../node_modules/phantomjs/bin";
-} else {
+} else if (fs.existsSync('node_modules')) {
     selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
+    phantomLoc += "/../node_modules/phantomjs/bin";
+} else {
+    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );
     phantomLoc += "/../../phantomjs/bin";
 }
 
@@ -110,7 +113,7 @@ function start( next, isHeadless, options ) {
         if ( isHeadless) {
             // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
-//                console.log ('selenium hub ready');
+                console.log ('selenium hub ready');
                 return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
@@ -133,7 +136,7 @@ function start( next, isHeadless, options ) {
     seleniumServerProcess.stdout.on('data', function( msg ) {
         // monitor process output for ready message
         if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
-//            console.log ('seleniumrc server ready');
+            console.log ('seleniumrc server ready');
             started = true;
             starting = false;
             if (typeof next === 'function') {
