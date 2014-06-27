@@ -8,7 +8,7 @@
 /* 
  * starts and stops selenium in webdriver grid mode as standard
  * but in single hub mode for phantom. This is to ensure compatibility
- * with versions provied on platforms like codeship and circlci
+ * with versions provided on platforms like codeship and circlci
  * requires java runtime installed
  */
 
@@ -21,26 +21,27 @@ var spawn = require('child_process').spawn,
     phantomLoc = __dirname,
     seleniumServerProcess = null,
     phantomProcess = null,
-    fs = require('fs');
+    fs = require('fs' );
 
 // installed as module or locally?
 if (fs.existsSync('jar')) {
-    selOptions.push ( 'jar/selenium-server-standalone-2.39.0.jar' );
+    selOptions.push ( 'jar/selenium-server-standalone-2.42.2.jar' );
     phantomLoc += "/../node_modules/phantomjs/bin";
-} else if (fs.existsSync('node_modules')) {
-    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );    
+// this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
+} else if (fs.existsSync('/../node_modules/phantomjs/bin/phantomjs')) {
+    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.42.2.jar' );
     phantomLoc += "/../node_modules/phantomjs/bin";
 } else {
-    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.39.0.jar' );
+    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.42.2.jar' );
     phantomLoc += "/../../phantomjs/bin";
 }
-
+console.log (selOptions , phantomLoc ,__dirname);
 /*
  * starts phantom, called after grid has been established
  * @private
  */
 function startPhantom ( next, options ) {
-
+    
     phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
 
     phantomProcess.stderr.setEncoding('utf8');
@@ -52,7 +53,7 @@ function startPhantom ( next, options ) {
     phantomProcess.stdout.on('data', function( msg ) {
         // look for msg that indicates it's ready and then stop logging messages
         if ( !started && msg.indexOf( 'Registered with grid' ) > -1) {
-//            console.log ('phantom client ready');
+            console.log ('registered phantomjs with hub running on ' + options.host + ':' + options.port);
             started = true;
             starting = false;
             if (typeof next === 'function') { 
@@ -113,7 +114,7 @@ function start( next, isHeadless, options ) {
         if ( isHeadless) {
             // check for grid started, which is outputted to standard error
             if ( data.indexOf( 'Started SocketConnector' ) > -1) {
-                console.log ('selenium hub ready');
+//                console.log ('selenium hub ready');
                 return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
@@ -136,7 +137,7 @@ function start( next, isHeadless, options ) {
     seleniumServerProcess.stdout.on('data', function( msg ) {
         // monitor process output for ready message
         if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
-            console.log ('seleniumrc server ready');
+            console.log ('seleniumrc webdriver ready on ' + options.host + ':' + options.port);
             started = true;
             starting = false;
             if (typeof next === 'function') {
