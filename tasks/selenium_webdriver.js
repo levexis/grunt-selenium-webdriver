@@ -35,7 +35,6 @@ if (fs.existsSync('jar')) {
     selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.42.2.jar' );
     phantomLoc += "/../../phantomjs/bin";
 }
-console.log (selOptions , phantomLoc ,__dirname);
 /*
  * starts phantom, called after grid has been established
  * @private
