@@ -35,16 +35,16 @@ console.log ('Current location: [' + __dirname + ']. ' + getEnv() );
 
 // paths vary depending of whether installed as module or locally
 // and on different local and CI environments
-if (fs.existsSync('jar')) {
+if ( fs.existsSync('jar/' + JAR_NAME) ) {
     console.log ('branch 1a');
     // mac plugin test
     selOptions.push ( 'jar/' + JAR_NAME );
 // this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
-} else if (fs.existsSync('node_modules/grunt-selenium-webdriver/jar')) {
+} else if ( fs.existsSync( 'node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME ) ) {
     console.log ('branch 2a');
     // mac as module
     selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
-} else if (fs.existsSync('../node_modules/grunt-selenium-webdriver/jar/')) {
+} else if ( fs.existsSync('../node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME ) ) {
     console.log ('branch 3a');
     // circle ci?
     selOptions.push ( '../node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
@@ -53,18 +53,13 @@ if (fs.existsSync('jar')) {
     throw new Error('Unable to find path to selenium, please run npm install and find the relative path for your system. Current location: [' + __dirname + ']. '  + getEnv() );
 }
 // installed as module or locally?
-if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin") ) {
+if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
     console.log ('branch 1b');
-    // mac?
+    // mac as grunt plugin test
     phantomLoc += "/../node_modules/phantomjs/bin";
-// this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
-} else if (fs.existsSync(phantomLoc + '/../node_modules/phantomjs/bin/phantomjs')) {
-    console.log ('branch 2b');
-    // mac, grunt plugin test
-    phantomLoc += "/../node_modules/phantomjs/bin";
-} else if (fs.existsSync(phantomLoc + '/../../phantomjs/bin')) {
+} else if (fs.existsSync(phantomLoc + '/../../phantomjs/bin/phantomjs')) {
     // mac, module use
-    console.log ('branch 3b');
+    console.log ('branch 2b');
     phantomLoc += "/../../phantomjs/bin";
 } else {
     // if adding new cases please identify environment so that changes can be maintained
