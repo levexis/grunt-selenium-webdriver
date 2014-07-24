@@ -38,34 +38,32 @@ function createClient( callBack) {
     }
 }
 
-/**
- * gets inner html of main div element
- * @param callBack or promise
- */
-function getMain (driver, callBack) {
-    driver.get( url );
-    var cont = driver.findElement( webdriver.By.id("main") );
-    cont.getAttribute('innerHTML').then( function ( html ) {
-        callBack ( html );
-    });
-}
 
 describe ('test phantom hub', function () {
     var _driver,
         setDriver = function ( driver ) {
             if (!driver) throw new Error ('driver not created');
             _driver = driver;
-        }
+        },
+        waitFor = function(locator, timeout) {
+        return _driver.wait(function(locator) {
+            return _driver.isElementPresent( locator );
+        }, timeout);
+    };
     before( function () {
         createClient ( setDriver );
     } );
+    after ( function () {
+        _driver.quit();
+    });
     it ('should return a page with a main div saying page loaded', function (done) {
         expect ( _driver ).to.exist;
-        driver.get( FIXTURE );
+        _driver.get( FIXTURE );
         // this refresh seems to prevent a race condition on CI, could just you a wait for element probably.
-        driver.navigate().refresh()
-            .then ( function () {
-            var main = driver.findElement( webdriver.By.id( "main" ) );
+        _driver.wait(function () { try { return _driver.isElementPresent(webdriver.By.id( "main" )); } catch (err) { return false; } } , 1000)
+            .then ( function (found) {
+            console.log('found',found);
+            var main = _driver.findElement( webdriver.By.id( "main" ) );
             main.getAttribute( 'innerHTML' ).then( function ( conts ) {
                 conts.should.contain( 'page loaded' );
                 done();
@@ -74,14 +72,15 @@ describe ('test phantom hub', function () {
     });
     it ('should change main div innerHTML to "main clicked" when clicked', function (done) {
         expect ( _driver ).to.exist;
-        driver.get( FIXTURE );
-        driver.navigate().refresh()
+        _driver.get( FIXTURE );
+        _driver.wait(function () { try { return _driver.isElementPresent(webdriver.By.id( "main" )); } catch (err) { return false; } } , 1000)
+        _driver.navigate().refresh()
             .then ( function () {
-            var main = driver.findElement( webdriver.By.id( "main" ) );
+            var main = _driver.findElement( webdriver.By.id( "main" ) );
             main.click()
                 .then( function () {
                     main.getAttribute( 'innerHTML' ).then( function ( conts ) {
-                        conts.should.contain( main );
+                        conts.should.contain( 'main clicked' );
                         done();
                     } );
                 } );
