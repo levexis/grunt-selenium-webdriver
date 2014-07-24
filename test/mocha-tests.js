@@ -62,24 +62,30 @@ describe ('test phantom hub', function () {
     it ('should return a page with a main div saying page loaded', function (done) {
         expect ( _driver ).to.exist;
         driver.get( FIXTURE );
-        var main = driver.findElement( webdriver.By.id("main") );
-        main.getAttribute('innerHTML').then( function ( conts ) {
-            conts.should.contain ('page loaded');
-            done();
+        // this refresh seems to prevent a race condition on CI, could just you a wait for element probably.
+        driver.navigate().refresh()
+            .then ( function () {
+            var main = driver.findElement( webdriver.By.id( "main" ) );
+            main.getAttribute( 'innerHTML' ).then( function ( conts ) {
+                conts.should.contain( 'page loaded' );
+                done();
+            } );
         });
     });
     it ('should change main div innerHTML to "main clicked" when clicked', function (done) {
         expect ( _driver ).to.exist;
         driver.get( FIXTURE );
-        var main = driver.findElement( webdriver.By.id("main") );
-        main.click()
-            .then( function () {
-                main.getAttribute('innerHTML').then( function ( conts ) {
-                    conts.should.contain( main );
-                    done();
-                });
+        driver.navigate().refresh()
+            .then ( function () {
+            var main = driver.findElement( webdriver.By.id( "main" ) );
+            main.click()
+                .then( function () {
+                    main.getAttribute( 'innerHTML' ).then( function ( conts ) {
+                        conts.should.contain( main );
+                        done();
+                    } );
+                } );
         });
-
         done();
     });
 });

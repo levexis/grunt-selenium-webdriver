@@ -164,7 +164,7 @@ function start( next, isHeadless, options ) {
              data.indexOf('WARNING') === -1 &&
              !started
               ) {
-            errMsg = 'FATAL ERROR starting selenium: ' + data;
+            errMsg = 'FATAL ERROR starting selenium: ' + data+ ' is java runtime installed?';
             throw errMsg;
         }
     });
