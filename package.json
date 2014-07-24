@@ -6,7 +6,7 @@
   "contibutors": [
     {
       "name": "Paul Cook",
-      "email": "paul@connectid.me",
+      "email": "levexis@googlemail.com",
       "url": "https://github.com/levexis"
     }
   ],
@@ -24,7 +24,7 @@
     }
   ],
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 0.10.0"
   },
   "scripts": {
     "test": "grunt test"
@@ -33,16 +33,21 @@
     "phantomjs": "~1.9.7-3"
   },
   "devDependencies": {
-    "selenium-webdriver": "~2.40.0",
-    "grunt-contrib-jshint": "~0.10.0",
+    "chai": "^1.9.1",
+    "grunt": "~0.4.4",
     "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-connect": "^0.8.0",
+    "grunt-contrib-jshint": "~0.10.0",
     "grunt-contrib-nodeunit": "~0.3.3",
-    "grunt": "~0.4.4"
+    "grunt-mocha-cli": "^1.9.0",
+    "selenium-webdriver": "^2.42.1"
   },
   "peerDependencies": {
     "grunt": "~0.4.4"
   },
   "keywords": [
-    "gruntplugin","selenium","phantom"
+    "gruntplugin",
+    "selenium",
+    "phantom"
   ]
 }
