@@ -74,7 +74,6 @@ describe ('test phantom hub', function () {
         expect ( _driver ).to.exist;
         _driver.get( FIXTURE );
         _driver.wait(function () { try { return _driver.isElementPresent(webdriver.By.id( "main" )); } catch (err) { return false; } } , 1000)
-        _driver.navigate().refresh()
             .then ( function () {
             var main = _driver.findElement( webdriver.By.id( "main" ) );
             main.click()

@@ -31,22 +31,23 @@ function getEnv () {
         os.arch() + ',' +
         os.release() + ']';
 }
-console.log ('Current location: [' + __dirname + ']. ' + getEnv() );
+//console.log ('Current location: [' + __dirname + ']. ' + getEnv() );
 
 // paths vary depending of whether installed as module or locally
-// and on different local and CI environments
+// and on different local and CI environments, if you are having problems enable the console and
+// let is know the details / submit a pull request for your env
 if ( fs.existsSync('jar/' + JAR_NAME) ) {
-    console.log ('branch 1a');
-    // mac plugin test
+//    console.log ('branch 1a');
+    // mac plugin test - ie a test of this respository
     selOptions.push ( 'jar/' + JAR_NAME );
 // this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
 } else if ( fs.existsSync( 'node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME ) ) {
-    console.log ('branch 2a');
+//    console.log ('branch 2a');
     // mac as module
     selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
 } else if ( fs.existsSync('../node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME ) ) {
-    console.log ('branch 3a');
-    // circle ci?
+//    console.log ('branch 3a');
+    // required for some unix environments?
     selOptions.push ( '../node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
 } else {
     // if adding new cases please identify environment so that changes can be maintained
@@ -54,12 +55,12 @@ if ( fs.existsSync('jar/' + JAR_NAME) ) {
 }
 // installed as module or locally?
 if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
-    console.log ('branch 1b');
+//    console.log ('branch 1b');
     // mac as grunt plugin test
     phantomLoc += "/../node_modules/phantomjs/bin";
 } else if (fs.existsSync(phantomLoc + '/../../phantomjs/bin/phantomjs')) {
     // mac, module use
-    console.log ('branch 2b');
+//    console.log ('branch 2b');
     phantomLoc += "/../../phantomjs/bin";
 } else {
     // if adding new cases please identify environment so that changes can be maintained
