@@ -22,30 +22,49 @@ var spawn = require('child_process').spawn,
     seleniumServerProcess = null,
     phantomProcess = null,
     fs = require('fs' ),
-    os = require('os' );
+    os = require('os' ),
+    JAR_NAME = 'selenium-server-standalone-2.42.2.jar';
 
-console.log ('Current location: [' + __dirname + ']' +
-'Environment: [' + os.type() + ',' +
-os.platform() + ',' +
-os.arch() + ',' +
-os.release() + ']');
+function getEnv () {
+    return 'Environment: [' + os.type() + ',' +
+        os.platform() + ',' +
+        os.arch() + ',' +
+        os.release() + ']';
+}
+console.log ('Current location: [' + __dirname + ']. ' + getEnv() );
 
-// installed as module or locally?
+// paths vary depending of whether installed as module or locally
+// and on different local and CI environments
 if (fs.existsSync('jar')) {
-    console.log ('branch 1');
+    console.log ('branch 1a');
+    // mac plugin test
+    selOptions.push ( 'jar/' + JAR_NAME );
+// this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
+} else if (fs.existsSync('node_modules/grunt-selenium-webdriver/jar')) {
+    console.log ('branch 2a');
+    // mac as module
+    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
+} else if (fs.existsSync('../node_modules/grunt-selenium-webdriver/jar/')) {
+    console.log ('branch 3a');
+    // circle ci?
+    selOptions.push ( '../node_modules/grunt-selenium-webdriver/jar/' + JAR_NAME );
+} else {
+    // if adding new cases please identify environment so that changes can be maintained
+    throw new Error('Unable to find path to selenium, please run npm install and find the relative path for your system. Current location: [' + __dirname + ']. '  + getEnv() );
+}
+// installed as module or locally?
+if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin") ) {
+    console.log ('branch 1b');
     // mac?
-    selOptions.push ( 'jar/selenium-server-standalone-2.42.2.jar' );
     phantomLoc += "/../node_modules/phantomjs/bin";
 // this fixes a bug with ubuntu builds https://github.com/levexis/grunt-selenium-webdriver/issues/2
-} else if (fs.existsSync('/../node_modules/phantomjs/bin/phantomjs')) {
-    console.log ('branch 2');
-    // ubuntu?
-    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.42.2.jar' );
+} else if (fs.existsSync(phantomLoc + '/../node_modules/phantomjs/bin/phantomjs')) {
+    console.log ('branch 2b');
+    // mac, grunt plugin test
     phantomLoc += "/../node_modules/phantomjs/bin";
-} else if (fs.existsSync('/../../phantomjs/bin')) {
-    console.log ('branch 3');
-    // circle ci?
-    selOptions.push ( 'node_modules/grunt-selenium-webdriver/jar/selenium-server-standalone-2.42.2.jar' );
+} else if (fs.existsSync(phantomLoc + '/../../phantomjs/bin')) {
+    // mac, module use
+    console.log ('branch 3b');
     phantomLoc += "/../../phantomjs/bin";
 } else {
     // if adding new cases please identify environment so that changes can be maintained
@@ -55,6 +74,8 @@ if (fs.existsSync('jar')) {
         os.arch() + ',' +
         os.release() + ']');
 }
+
+
 /*
  * starts phantom, called after grid has been established
  * @private
