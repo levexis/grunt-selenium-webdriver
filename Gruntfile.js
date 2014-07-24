@@ -39,7 +39,7 @@ module.exports = function(grunt) {
           reporter:      'spec',
           timeout:       20000
       },
-      dev: {
+      e2e: {
           options: {
               files: ['test/*.js']
           }
@@ -57,7 +57,7 @@ module.exports = function(grunt) {
     },
 
     connect: {
-      dev: {
+      e2e: {
           options: {
               port: 9000,
               base: 'test/fixtures',
@@ -84,8 +84,8 @@ module.exports = function(grunt) {
         'selenium_start' ,
         'selenium_stop' ,
         'selenium_phantom_hub',
-        'connect',
-        'mochacli',
+        'connect:e2e',
+        'mochacli:e2e',
         'selenium_stop']);
 
   // By default, lint and run all tests.

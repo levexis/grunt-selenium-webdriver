@@ -22,7 +22,7 @@ var spawn = require('child_process').spawn,
     seleniumServerProcess = null,
     phantomProcess = null,
     fs = require('fs' ),
-    os = require('fs' );
+    os = require('os' );
 
 console.log ('Current location: [' + __dirname + ']' +
 'Environment: [' + os.type() + ',' +
