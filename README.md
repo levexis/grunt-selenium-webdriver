@@ -34,13 +34,31 @@ Three tasks are added (selenium_start, selenium_stop and selenium_phantom_hub). 
         'mocha_e2e',
         'selenium_stop'    
     ]);
-
 ```
+
+### options
+
+You can set various selenium commandline options. Some environments already have an instance running on 4444, in which case set the port in your grunt config:
+
+```js
+    selenium_start: {
+        options: { port: 4445 }
+    },
+```
+
+You can see we do this in our tests, have a look at our GruntFile setup for the plugin. The options are:
+
+-host
+-port
+-timeout
+-maxSession
 
 ### Usage Examples
 
 This task is designed to be used in conjunction with your test runner of preference. The server is destroyed when grunt exists so grunt start_selenium will only make a server available to other grunt tasks.
 If you need a task that persists the selenium server then try grunt-selenium-standalone.
+
+If you look in the plugin you can see an example of a mocha test that uses using the raw selenium-webdriver node module. This project also works with protractor.
 
 #### selenium_start
 Starts a selenium local server on http://127.0.0.1:4444/wd/hub with all browsers in PATH available, including phantom. However, if you get errors with test run using default phantomjs try the task below.
@@ -49,9 +67,26 @@ starts a selenium grid hub and attaches phantomjs to it for headless testing, on
 #### selenium_stop
 stops whichever server was started, if you need to change from headless to normal mode then you will need to stop first
 
+# Problems?
+
+The reason for this project is there are inconsistencies between the location of files on different environments. If you hit a problem
+
+```
+cd node_modules/grunt-selenium-webdriver
+npm install
+grunt test --trace
+```
+
+This should give you some info about your system and relative paths etc. There are also some additional commented out console statement in the tasks file you can enable. If you can't fix the problem from here please send us this info on your support ticket along with any platform details (eg AWS, Travis etc).
+
 ## Contributing
+
+Please fix any bugs you find and add any new cases not covered, pull requests gratefully received. 
+
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+0.2.421 added some mocha tests + improved branching logic separated for phantom and selenium components 
+0.2.420 release using selenium-server-standalone-2.42.2.jar
 0.2.391 inital release using selenium-server-standalone-2.39.0.jar
 0.2.392 will have theses documentation updates
