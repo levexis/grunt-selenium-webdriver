@@ -48,10 +48,10 @@ You can set various selenium commandline options. Some environments already have
 
 You can see we do this in our tests, have a look at our GruntFile setup for the plugin. The options are:
 
--host
--port
--timeout
--maxSession
+- host
+- port
+- timeout
+- maxSession
 
 ### Usage Examples
 
