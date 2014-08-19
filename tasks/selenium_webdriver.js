@@ -78,7 +78,7 @@ if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
  */
 function startPhantom ( next, options ) {
     
-    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', '8080', '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
+    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
 
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
@@ -249,7 +249,8 @@ module.exports= function ( grunt) {
           timeout: 30,
           host: '127.0.0.1',
           port: 4444,
-          maxSession: 5
+          maxSession: 5,
+          phantomPort: 8080
         });
         var done = this.async();
         return start ( done , true, options );

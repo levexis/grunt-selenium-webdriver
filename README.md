@@ -52,6 +52,7 @@ You can see we do this in our tests, have a look at our GruntFile setup for the 
 - port
 - timeout
 - maxSession
+- phantomPort
 
 ### Usage Examples
 
