@@ -123,11 +123,15 @@ function start( next, isHeadless, options ) {
     selOptions.push ( '-port' );
     selOptions.push ( options.port );
 
-    selOptions.push ( '-timeout' );
-    selOptions.push ( options.timeout );
+    if ( options.timeout) {
+        selOptions.push( '-timeout' );
+        selOptions.push( options.timeout );
+    }
 
-    selOptions.push ( '-maxSession' );
-    selOptions.push ( options.maxSession );
+    if ( options.maxSession) {
+        selOptions.push( '-maxSession' );
+        selOptions.push( options.maxSession );
+    }
 
 
     seleniumServerProcess = spawn( 'java', selOptions );
@@ -236,20 +240,20 @@ process.on('exit', function onProcessExit() {
 module.exports= function ( grunt) {
     grunt.registerTask( 'selenium_start' , 'Starts and stops webdriver in grid or hub mode for use with 3rd party CI platforms' , function () {
         var options = this.options({
-          timeout: 30,
+          timeout: false, // set to integer if required
           host: '127.0.0.1',
           port: 4444,
-          maxSession: 5
+          maxSession: false
         });
         var done = this.async();
         return start ( done , false, options );
     });    
     grunt.registerTask( 'selenium_phantom_hub' , 'Starts selenium in hub mode and attaches a single phantonjs to it for headless env', function() {
         var options = this.options({
-          timeout: 30,
+          timeout: false, // set to integer if required
           host: '127.0.0.1',
           port: 4444,
-          maxSession: 5,
+          maxSession: false,
           phantomPort: 8080
         });
         var done = this.async();
