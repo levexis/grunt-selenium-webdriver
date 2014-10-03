@@ -133,8 +133,8 @@ function start( next, isHeadless, options ) {
         selOptions.push( options.maxSession );
     }
 
-
-    seleniumServerProcess = spawn( 'java', selOptions );
+    var spawnOptions = options['cwd'] ? {cwd: options['cwd']} : null;
+    seleniumServerProcess = spawn( 'java', selOptions, spawnOptions );
     // selenium webdriver has a port prober in it which could be factored in.
     seleniumServerProcess.on('uncaughtException', function(err) {
         if(err.errno === 'EADDRINUSE' ){
@@ -243,7 +243,8 @@ module.exports= function ( grunt) {
           timeout: false, // set to integer if required
           host: '127.0.0.1',
           port: 4444,
-          maxSession: false
+          maxSession: false,
+          cwd: null
         });
         var done = this.async();
         return start ( done , false, options );
