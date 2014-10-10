@@ -77,8 +77,8 @@ if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
  * @private
  */
 function startPhantom ( next, options ) {
-    
-    phantomProcess = spawn( phantomLoc +'/phantomjs' , [ '--webdriver', options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host+':' + options.port ]);
+
+    phantomProcess = spawn('node', [phantomLoc +'/phantomjs', '--webdriver=' + options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host + ':' + options.port]);
 
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
