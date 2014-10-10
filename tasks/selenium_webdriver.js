@@ -107,8 +107,16 @@ function startPhantom ( next, options ) {
  * @private
  */
 function start( next, isHeadless, options ) {
+    function seleniumStarted() {
+        console.log( 'seleniumrc webdriver ready on ' + options.host + ':' + options.port );
+        started = true;
+        starting = false;
+        if ( typeof next === 'function' ) {
+            return next();
+        }
+    }
 
-    if ( started) { 
+        if ( started) {
         return next(console.log('already started')); 
     }
     
@@ -151,9 +159,9 @@ function start( next, isHeadless, options ) {
     seleniumServerProcess.stderr.on('data', function(data) {
         var errMsg;
         data = data.trim();
-        if ( isHeadless) {
+        if ( isHeadless  ) {
             // check for grid started, which is outputted to standard error
-            if ( data.indexOf( 'Started SocketConnector' ) > -1) {
+            if ( data.indexOf( 'Started Socket' ) > -1 ) {
 //                console.log ('selenium hub ready');
                 return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
@@ -161,7 +169,10 @@ function start( next, isHeadless, options ) {
                  errMsg = 'FATAL ERROR starting selenium: ' + data + ' maybe try killall -9 java';
                 throw errMsg;                
             }
-        } else if ( data && 
+        } else if ( data.indexOf( 'Started Socket' ) > -1 ) {
+            // seems selenium 2.43.1 now outputs logs to standard error too so listening to standard out is redundant?
+            seleniumStarted();
+        } else if ( data &&
              // throw error if something unexpected happens
              data.indexOf('org.openqa.grid.selenium.GridLauncher main') === -1 &&
              data.indexOf('Setting system property') === -1 &&
@@ -174,17 +185,16 @@ function start( next, isHeadless, options ) {
         }
     });
     seleniumServerProcess.stdout.setEncoding('utf8');
+    // seems selenium 2.43.1 now outputs logs to standard error too so this is now redundant
+    // will leave for now. Tested on mac and ubuntu
     seleniumServerProcess.stdout.on('data', function( msg ) {
+        console.log('STDOUT' , msg);
         // monitor process output for ready message
         if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
-            console.log ('seleniumrc webdriver ready on ' + options.host + ':' + options.port);
-            started = true;
-            starting = false;
-            if (typeof next === 'function') {
-                return next();
-            }
+            seleniumStarted();
         }
     });
+
 }
 
     
