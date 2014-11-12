@@ -87,6 +87,7 @@ function startPhantom ( next, options ) {
     phantomProcess.stdout.setEncoding('utf8');
     // wait for client ready message before proceeding
     phantomProcess.stdout.on('data', function( msg ) {
+        var error;
         // look for msg that indicates it's ready and then stop logging messages
         if ( !started && msg.indexOf( 'Registered with grid' ) > -1) {
             console.log ('registered phantomjs with hub running on ' + options.host + ':' + options.port);
@@ -95,6 +96,10 @@ function startPhantom ( next, options ) {
             if (typeof next === 'function') { 
                 return next();
             }
+        } else if (msg.indexOf('ERROR') > -1) {
+            error = JSON.parse(msg.substring(msg.indexOf('{')));
+            console.trace(error);
+            process.exit(1);
         }
     });
 }
