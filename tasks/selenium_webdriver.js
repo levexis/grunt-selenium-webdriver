@@ -5,7 +5,7 @@
  * Copyright (c) 2014 ConnectiD
  * Licensed under the MIT license.
  */
-/* 
+/*
  * starts and stops selenium in webdriver grid mode as standard
  * but in single hub mode for phantom. This is to ensure compatibility
  * with versions provided on platforms like codeship and circlci
@@ -14,7 +14,7 @@
 
 "use strict";
 var spawn = require('child_process').spawn,
-    starting = false, 
+    starting = false,
     started = false,
     os = require('os'),
     selOptions = [ '-jar' ],
@@ -93,7 +93,7 @@ function startPhantom ( next, options ) {
             console.log ('registered phantomjs with hub running on ' + options.host + ':' + options.port);
             started = true;
             starting = false;
-            if (typeof next === 'function') { 
+            if (typeof next === 'function') {
                 return next();
             }
         } else if (msg.indexOf('ERROR') > -1) {
@@ -122,10 +122,10 @@ function start( next, isHeadless, options ) {
     }
 
         if ( started) {
-        return next(console.log('already started')); 
+        return next(console.log('already started'));
     }
-    
-    if ( isHeadless ) {    
+
+    if ( isHeadless ) {
         selOptions.push ( '-role');
         selOptions.push ( 'hub');
     }
@@ -146,13 +146,13 @@ function start( next, isHeadless, options ) {
         selOptions.push( options.maxSession );
     }
 
-    var spawnOptions = options['cwd'] ? {cwd: options['cwd']} : null;
+    var spawnOptions = options['cwd'] ? {cwd: options['cwd']} : undefined;
     seleniumServerProcess = spawn( 'java', selOptions, spawnOptions );
     // selenium webdriver has a port prober in it which could be factored in.
     seleniumServerProcess.on('uncaughtException', function(err) {
         if(err.errno === 'EADDRINUSE' ){
             console.log ('PORT already IN USE, assume selenium running');
-            next(); 
+            next();
         } else {
             console.trace(err);
             process.exit(1);
@@ -172,7 +172,7 @@ function start( next, isHeadless, options ) {
             } else if ( data.indexOf ('Address already in use') > -1 ) {
                 // throw error if already started
                  errMsg = 'FATAL ERROR starting selenium: ' + data + ' maybe try killall -9 java';
-                throw errMsg;                
+                throw errMsg;
             }
         } else if ( data.indexOf( 'Started Socket' ) > -1 ) {
             // seems selenium 2.43.1 now outputs logs to standard error too so listening to standard out is redundant?
@@ -202,15 +202,15 @@ function start( next, isHeadless, options ) {
 
 }
 
-    
+
 /**
  * Stop the servers
- * 
+ *
  * @param function optional callback
  * @private
  */
 function stop(next) {
-    if (phantomProcess) { 
+    if (phantomProcess) {
         seleniumServerProcess.on('close', function (code, signal) {
             // this should really resolve both callbacks rather than guessing phantom wrapper will terminate instantly
             if (typeof next === 'function' && !seleniumServerProcess ) {
@@ -222,14 +222,14 @@ function stop(next) {
         started = false;
         starting = false;
     }
-    if (seleniumServerProcess) { 
+    if (seleniumServerProcess) {
         seleniumServerProcess.on('close', function (code, signal) {
-            if (typeof next === 'function' ) { 
+            if (typeof next === 'function' ) {
                 // need to stub out the other callback
                 next();
             }
         });
-        seleniumServerProcess.kill('SIGTERM');        
+        seleniumServerProcess.kill('SIGTERM');
         started = false;
         starting = false;
     }
@@ -263,7 +263,7 @@ module.exports= function ( grunt) {
         });
         var done = this.async();
         return start ( done , false, options );
-    });    
+    });
     grunt.registerTask( 'selenium_phantom_hub' , 'Starts selenium in hub mode and attaches a single phantonjs to it for headless env', function() {
         var options = this.options({
           timeout: false, // set to integer if required
