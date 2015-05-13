@@ -78,7 +78,7 @@ if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
  */
 function startPhantom ( next, options ) {
 
-    phantomProcess = spawn('node', [phantomLoc +'/phantomjs', '--webdriver=' + options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host + ':' + options.port]);
+    phantomProcess = spawn('node', [phantomLoc +'/phantomjs', '--webdriver=' + options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host + ':' + options.port, '--ignore-ssl-errors=' + options.ignoreSslErrors]);
 
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
@@ -259,7 +259,8 @@ module.exports= function ( grunt) {
           host: '127.0.0.1',
           port: 4444,
           maxSession: false,
-          cwd: null
+          cwd: null,
+          ignoreSslErrors: false
         });
         var done = this.async();
         return start ( done , false, options );
@@ -270,7 +271,8 @@ module.exports= function ( grunt) {
           host: '127.0.0.1',
           port: 4444,
           maxSession: false,
-          phantomPort: 8080
+          phantomPort: 8080,
+          ignoreSslErrors: false
         });
         var done = this.async();
         return start ( done , true, options );
