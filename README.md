@@ -87,11 +87,12 @@ Please fix any bugs you find and add any new cases not covered, pull requests gr
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
 ## Release History
+``
 0.2.432 support for node 0.12 
 0.2.422 phantomPort option added 
 0.2.421 added some mocha tests + improved branching logic separated for phantom and selenium components 
 0.2.420 release using selenium-server-standalone-2.42.2.jar
 0.2.391 inital release using selenium-server-standalone-2.39.0.jar
 0.2.392 will have theses documentation updates
-0.2.450 release using selenium-server-standalone-2.45.0.jar
-
+0.2.450 release using selenium-server-standalone-2.45.0.jar, adds --ignore-ssl-errors to phantomjs startup
+``
