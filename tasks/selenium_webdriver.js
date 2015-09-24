@@ -177,6 +177,9 @@ function start( next, isHeadless, options ) {
         } else if ( data.indexOf( 'Started Socket' ) > -1 ) {
             // seems selenium 2.43.1 now outputs logs to standard error too so listening to standard out is redundant?
             seleniumStarted();
+        } else if ( !started &&  data.indexOf( 'Selenium Server is up and running') > -1  ) {
+            // as of 2.471 this nice clear message appears
+            seleniumStarted();
         } else if ( data &&
              // throw error if something unexpected happens
              data.indexOf('org.openqa.grid.selenium.GridLauncher main') === -1 &&
@@ -194,8 +197,9 @@ function start( next, isHeadless, options ) {
     // will leave for now. Tested on mac and ubuntu
     seleniumServerProcess.stdout.on('data', function( msg ) {
         console.log('STDOUT' , msg);
-        // monitor process output for ready message
-        if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1 ) ) {
+        // monitor process output for ready message, most recent version gives a nice clear message on standard error
+        // but have left java trigger for support for older seleniums as can select in config
+        if ( !started && ( msg.indexOf( 'Started org.openqa.jetty.jetty.servlet.ServletHandler' ) > -1  )) {
             seleniumStarted();
         }
     });
