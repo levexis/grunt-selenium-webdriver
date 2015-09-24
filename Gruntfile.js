@@ -87,6 +87,12 @@ module.exports = function(grunt) {
         'connect:e2e',
         'mochacli:e2e',
         'selenium_stop']);
+    // just run phantom tests
+    grunt.registerTask('mocha', ['clean',
+        'selenium_phantom_hub',
+        'connect:e2e',
+        'mochacli:e2e',
+        'selenium_stop']);
 
   // By default, lint and run all tests.
   grunt.registerTask('default', ['jshint', 'test']);
