@@ -71,7 +71,6 @@ if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
         os.release() + ']');
 }
 
-
 /*
  * starts phantom, called after grid has been established
  * @private
@@ -121,7 +120,7 @@ function start( next, isHeadless, options ) {
         }
     }
 
-        if ( started) {
+    if ( started ) {
         return next(console.log('already started'));
     }
 
@@ -166,7 +165,7 @@ function start( next, isHeadless, options ) {
         data = data.trim();
         if ( isHeadless  ) {
             // check for grid started, which is outputted to standard error
-            if ( data.indexOf( 'Started Socket' ) > -1 ) {
+            if ( data.indexOf( 'Selenium Grid hub is up and running' ) > -1 ) {
 //                console.log ('selenium hub ready');
                 return startPhantom(next, options);
             } else if ( data.indexOf ('Address already in use') > -1 ) {
@@ -174,7 +173,7 @@ function start( next, isHeadless, options ) {
                  errMsg = 'FATAL ERROR starting selenium: ' + data + ' maybe try killall -9 java';
                 throw errMsg;
             }
-        } else if ( data.indexOf( 'Started Socket' ) > -1 ) {
+        } else if ( data.indexOf( 'Selenium Server is up and running' ) > -1 ) {
             // seems selenium 2.43.1 now outputs logs to standard error too so listening to standard out is redundant?
             seleniumStarted();
         } else if ( data &&
@@ -201,7 +200,6 @@ function start( next, isHeadless, options ) {
     });
 
 }
-
 
 /**
  * Stop the servers
@@ -282,7 +280,3 @@ module.exports= function ( grunt) {
         return stop ( done );
     });
 };
-
-
-
-
