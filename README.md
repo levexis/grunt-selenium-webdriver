@@ -1,10 +1,10 @@
 # grunt-selenium-webdriver
 
-> Starts and stops slenium in webdriver or hub mode, works with 3rd party CI platforms
+> Starts and stops selenium in webdriver or hub mode, works with 3rd party CI platforms
 
 We wrote this after extensive problems getting selenium webdriver tests to run in all local and 3rd party environments. If you are using circleci and want to run headless tests then the selenium_phantom_hub task will do the trick.
 
-Note that we have found probems with selenium and bundled chromedriver but at the current time we do not have an option to start chromedriver in the same way as phantomjs. Our advice is use firefox and phantom for CI testing and saucelabs / local for the rest.
+Note that we have found problems with selenium and bundled chromedriver but at the current time we do not have an option to start chromedriver in the same way as phantomjs. Our advice is use firefox and phantom for CI testing and saucelabs / local for the rest.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.2`
@@ -92,7 +92,7 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 0.2.422 phantomPort option added 
 0.2.421 added some mocha tests + improved branching logic separated for phantom and selenium components 
 0.2.420 release using selenium-server-standalone-2.42.2.jar
-0.2.391 inital release using selenium-server-standalone-2.39.0.jar
+0.2.391 initial release using selenium-server-standalone-2.39.0.jar
 0.2.392 will have theses documentation updates
 0.2.450 release using selenium-server-standalone-2.45.0.jar
 0.2.451 adds --ignore-ssl-errors to phantomjs startup
