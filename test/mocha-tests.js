@@ -2,11 +2,10 @@
  * Tests for grunt-selenium-webdriver, any problems are likely to be down to the relative install path of node modules on your system
  * run grunt test --stack for more info on
  */
-var chai = require('chai' ),
-    webdriver = require('selenium-webdriver' ),
+var chai = require('chai'),
+    webdriver = require('selenium-webdriver'),
     FIXTURE = 'http://localhost:9000/index.html',
-    expect = chai.expect,
-    should = chai.should();
+    expect = chai.expect;
 
 /**
  * creates a webdriver client
@@ -69,6 +68,7 @@ describe ('test phantom hub', function () {
                 done();
             } );
         });
+        done();
     });
     it ('should change main div innerHTML to "main clicked" when clicked', function (done) {
         expect ( _driver ).to.exist;
