@@ -23,7 +23,7 @@ var spawn = require('child_process').spawn,
     phantomProcess = null,
     fs = require('fs' ),
     os = require('os' ),
-    JAR_NAME = 'selenium-server-standalone-2.47.1.jar';
+    JAR_NAME = 'selenium-server-standalone-2.48.2.jar';
 
 function getEnv () {
     return 'Environment: [' + os.type() + ',' +

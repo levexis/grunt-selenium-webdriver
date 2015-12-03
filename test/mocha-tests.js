@@ -11,7 +11,7 @@ var chai = require('chai'),
  * creates a webdriver client
  * @param callBack or promise
  */
-function createClient( callBack) {
+function createClient(callBack) {
 // you can stick your saucelabs stuff here
     var serverConfig = 'http://127.0.0.1:4445/wd/hub',
         capabilities = {
@@ -20,70 +20,83 @@ function createClient( callBack) {
             javascriptEnabled: true,
             takesScreenshot: true,
             databaseEnabled: false,
-            cssSelectorsEnabled:true,
+            cssSelectorsEnabled: true,
             webStorageEnabled: true
-    };
+        };
 
-    driver = new webdriver.Builder().
-        usingServer( serverConfig ).
-        withCapabilities( capabilities).
-        build();
+    var driver = new webdriver.Builder()
+        .usingServer(serverConfig)
+        .withCapabilities(capabilities)
+        .build();
     if (typeof callBack === 'function') {
-        return callBack (driver);
-    } else if ( typeof callBack === 'object' && typeof callBack.resolve === 'function' ) {
-        return callBack.resolve( driver );
+        return callBack(driver);
+    } else if (typeof callBack === 'object' && typeof callBack.resolve === 'function') {
+        return callBack.resolve(driver);
     } else {
         return driver;
     }
 }
 
-
-describe ('test phantom hub', function () {
+describe('test phantom hub', function() {
     var _driver,
-        setDriver = function ( driver ) {
-            if (!driver) throw new Error ('driver not created');
+        setDriver = function(driver) {
+            if (!driver) {
+                throw new Error('driver not created');
+            }
             _driver = driver;
         },
         waitFor = function(locator, timeout) {
-        return _driver.wait(function(locator) {
-            return _driver.isElementPresent( locator );
-        }, timeout);
-    };
-    before( function () {
-        createClient ( setDriver );
-    } );
-    after ( function () {
+            return _driver.wait(function(locator) {
+                return _driver.isElementPresent(locator);
+            }, timeout);
+        };
+    before(function() {
+        createClient(setDriver);
+    });
+    after(function() {
         _driver.quit();
     });
-    it ('should return a page with a main div saying page loaded', function (done) {
-        expect ( _driver ).to.exist;
-        _driver.get( FIXTURE );
+    it('should return a page with a main div saying page loaded', function(done) {
+        expect( _driver ).to.exist;
+        _driver.get(FIXTURE);
         // this refresh seems to prevent a race condition on CI, could just you a wait for element probably.
-        _driver.wait(function () { try { return _driver.isElementPresent(webdriver.By.id( "main" )); } catch (err) { return false; } } , 1000)
-            .then ( function (found) {
-            console.log('found',found);
-            var main = _driver.findElement( webdriver.By.id( "main" ) );
-            main.getAttribute( 'innerHTML' ).then( function ( conts ) {
-                conts.should.contain( 'page loaded' );
-                done();
-            } );
-        });
+        _driver.wait(function() {
+                try {
+                    return _driver.isElementPresent(webdriver.By.id("main"));
+                } catch (err) {
+                    return false;
+                }
+            }, 1000)
+            .then(function(found) {
+                console.log('found', found);
+                var main = _driver.findElement(webdriver.By.id("main"));
+                main.getAttribute('innerHTML').then(function(conts) {
+                    conts.should.contain('page loaded');
+                    done();
+                });
+            });
         done();
     });
-    it ('should change main div innerHTML to "main clicked" when clicked', function (done) {
-        expect ( _driver ).to.exist;
-        _driver.get( FIXTURE );
-        _driver.wait(function () { try { return _driver.isElementPresent(webdriver.By.id( "main" )); } catch (err) { return false; } } , 1000)
-            .then ( function () {
-            var main = _driver.findElement( webdriver.By.id( "main" ) );
-            main.click()
-                .then( function () {
-                    main.getAttribute( 'innerHTML' ).then( function ( conts ) {
-                        conts.should.contain( 'main clicked' );
-                        done();
-                    } );
-                } );
-        });
+    it('should change main div innerHTML to "main clicked" when clicked', function(done) {
+        expect(_driver).to.exist;
+        _driver.get(FIXTURE);
+        _driver.wait(function() {
+                try {
+                    return _driver.isElementPresent(webdriver.By.id("main"));
+                } catch (err) {
+                    return false;
+                }
+            }, 1000)
+            .then(function() {
+                var main = _driver.findElement(webdriver.By.id("main"));
+                main.click()
+                    .then(function() {
+                        main.getAttribute('innerHTML').then(function(conts) {
+                            conts.should.contain('main clicked');
+                            done();
+                        });
+                    });
+            });
         done();
     });
 });
