@@ -80,6 +80,10 @@ grunt test --trace
 
 This should give you some info about your system and relative paths etc. There are also some additional commented out console statement in the tasks file you can enable. If you can't fix the problem from here please send us this info on your support ticket along with any platform details (eg AWS, Travis etc).
 
+## Phantom 2
+
+Phantom 2 is not currently supported due to a bug with ghostdriver - https://github.com/detro/ghostdriver/issues/394
+
 ## Contributing
 
 Please fix any bugs you find and add any new cases not covered, pull requests gratefully received. 

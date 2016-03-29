@@ -23,7 +23,7 @@ var spawn = require('child_process').spawn,
     phantomProcess = null,
     fs = require('fs' ),
     os = require('os' ),
-    JAR_NAME = 'selenium-server-standalone-2.48.2.jar';
+    JAR_NAME = 'selenium-server-standalone-2.53.0.jar';
 
 function getEnv () {
     return 'Environment: [' + os.type() + ',' +
@@ -54,14 +54,14 @@ if ( fs.existsSync('jar/' + JAR_NAME) ) {
     throw new Error('Unable to find path to selenium, please run npm install and find the relative path for your system. Current location: [' + __dirname + ']. '  + getEnv() );
 }
 // installed as module or locally?
-if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
+if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs-prebuilt/bin/phantomjs") ) {
 //    console.log ('branch 1b');
     // mac as grunt plugin test
-    phantomLoc += "/../node_modules/phantomjs/bin";
-} else if (fs.existsSync(phantomLoc + '/../../phantomjs/bin/phantomjs')) {
+    phantomLoc += "/../node_modules/phantomjs-prebuilt/bin";
+} else if (fs.existsSync(phantomLoc + '/../../phantomjs-prebuilt/bin/phantomjs')) {
     // mac, module use
 //    console.log ('branch 2b');
-    phantomLoc += "/../../phantomjs/bin";
+    phantomLoc += "/../../phantomjs-prebuilt/bin";
 } else {
     // if adding new cases please identify environment so that changes can be maintained
     throw new Error('Unable to find path to phantomjs, please run npm install and find the relative path for your system. Current location: [' + __dirname + ']' +
@@ -78,15 +78,17 @@ if ( fs.existsSync( phantomLoc + "/../node_modules/phantomjs/bin/phantomjs") ) {
 function startPhantom ( next, options ) {
 
     phantomProcess = spawn('node', [phantomLoc +'/phantomjs', '--webdriver=' + options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host + ':' + options.port, '--ignore-ssl-errors=' + options.ignoreSslErrors]);
-
+//    console.log( phantomLoc +'/phantomjs', '--webdriver=' + options.phantomPort, '--webdriver-selenium-grid-hub=http://' + options.host + ':' + options.port, '--ignore-ssl-errors=' + options.ignoreSslErrors );
     phantomProcess.stderr.setEncoding('utf8');
     phantomProcess.stderr.on('data', function(data) {
+//        console.log('error',data);
         data = data.trim();
     });
     phantomProcess.stdout.setEncoding('utf8');
     // wait for client ready message before proceeding
     phantomProcess.stdout.on('data', function( msg ) {
         var error;
+//        console.log('out',data);
         // look for msg that indicates it's ready and then stop logging messages
         if ( !started && msg.indexOf( 'Registered with grid' ) > -1) {
             console.log ('registered phantomjs with hub running on ' + options.host + ':' + options.port);
